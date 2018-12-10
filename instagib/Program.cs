@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace instagib
@@ -11,10 +7,27 @@ namespace instagib
     {
         static async Task Main(string[] args)
         {
-            var cs = "Application Name=kafka2sql-experimental;database=Sampler;server=localhost,1403;user=sa;pwd=Your_password123;Connection Timeout=152";            
-            var builder = new SqlConnectionStringBuilder(cs);
-            var timeout = builder.ConnectTimeout;
-            Console.WriteLine(timeout);           
+            var c1 = 5;
+            var c2 = c1;
+            for (int i = 0; i < c2; i++)
+            {
+                try
+                {
+                    if (i == 4)
+                    {
+                        continue;
+                    }
+                }                
+                finally
+                {
+                    c1--;
+                }
+            }
+
+            if (c1 != 0)
+            {
+                throw new Exception("this will never happen");
+            }
         }  
     }
 }
