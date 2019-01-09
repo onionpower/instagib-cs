@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace instagib
@@ -7,27 +9,28 @@ namespace instagib
     {
         static async Task Main(string[] args)
         {
-            var c1 = 5;
-            var c2 = c1;
-            for (int i = 0; i < c2; i++)
+            var throwingTask0 = Task.Run(() =>
             {
-                try
-                {
-                    if (i == 4)
-                    {
-                        continue;
-                    }
-                }                
-                finally
-                {
-                    c1--;
-                }
-            }
-
-            if (c1 != 0)
+                Thread.Sleep(1000);
+                throw new Exception("manually thrown exception 0");
+            });
+            var throwingTask1 = Task.Run(() => throw new Exception("manually thrown exception 1"));
+            var longRunningTask = Task.Run(async () =>
             {
-                throw new Exception("this will never happen");
+                await Task.Delay(2000);
+                Console.WriteLine("long running task is done");
+            });
+            
+            var t = Task.WhenAll(throwingTask0, throwingTask1, longRunningTask);
+            try
+            {
+                await t;
             }
+            catch
+            {
+                Console.WriteLine(string.Join(", ", t.Exception.Flatten().InnerExceptions.Select(e => e.Message)));
+            }
+            Console.WriteLine("all is done");
         }  
     }
 }
